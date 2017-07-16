@@ -15,13 +15,6 @@ class ImageList extends Component{
 			return <li key={image.name}><img onClick={() => {this.onImgClick(`${image.name}${image.extension}`)}} width={128} height={128} style={{objectFit:'cover'}} src={`${ROOT_URL}/${image.name}${image.extension}`} /></li>
 		})	
 	}
-	renderImages(){
-		console.log(this.props.images)
-		return _.map(this.props.images, (image) =>{
-			console.log(image)
-			return <li key={image.name}><img width={128} height={128} style={{objectFit:'cover'}} src={`${ROOT_URL}/${image.name}${image.extension}`} /></li>
-		})	
-	}
 	render(){
 		return(
 			<ul>
