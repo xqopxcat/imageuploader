@@ -1,4 +1,4 @@
-# imageuploarder
+# imageuploader
 
 #Start the API server first
 (imageapi -> 127.0.0.1:3000/)
