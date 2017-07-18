@@ -1,8 +1,9 @@
 import React, { Component } from 'react';
 import _ from 'lodash';
 import { connect } from 'react-redux';
-import { fetchImage, ROOT_URL } from '../actions';
-import ImageItem from '../containers/image_item';
+import { bindActionCreators } from 'redux';
+import { fetchImage, getImage, ROOT_URL } from '../actions';
+import ImageItem from '../components/image_item';
 
 class ImageList extends Component{
 	constructor(props){
@@ -13,12 +14,13 @@ class ImageList extends Component{
 		this.props.fetchImage();
 	}
 	onImgClick(id, extension){
-		console.log(id);
-		this.setState({imgSrc: `http://localhost:3000/${id}`, extension:`${extension}`})
+		this.setState({imgSrc: `${ROOT_URL}/${id}`, extension:`${extension}`}, () => {
+			this.props.getImage(id, extension, 800, 600);
+		})
 	}
 	renderImages(){
 		return _.map(this.props.images, (image) =>{
-			return <li key={image.name}><img onClick={() => {this.onImgClick(`${image.name}`, `${image.extension}`)}} width={128} height={128} style={{objectFit:'cover'}} src={`${ROOT_URL}/${image.name}${image.extension}`} /></li>
+			return <li className="list-group-item" key={image.name}><img onClick={() => {this.onImgClick(`${image.name}`, `${image.extension}`)}} width={128} height={128} style={{objectFit:'cover'}} src={`${ROOT_URL}/${image.name}${image.extension}`} /></li>
 		})	
 	}
 	render(){
@@ -26,17 +28,25 @@ class ImageList extends Component{
 		const imgExt = this.state.extension;
 		return(
 			<div>
-				<ul className="col-xs-2">
+				<ul className="list-group col-xs-2">
 					{this.renderImages()}
 				</ul>
-				<ImageItem smallImg={`${imgSrc}${imgExt}`} largeImg={`${imgSrc}-800x600${imgExt}`}/>
+				{imgSrc == "" ? null : <ImageItem smallImg={`${imgSrc}${imgExt}`} 
+				largeImg={`${ROOT_URL}/${this.props.getimage.filename}`}/>}
 			</div>
 		)
 	}
 }
 
 function mapStateToProps(state){
-	return { images: state.images };
+	return { 
+		images: state.images,
+		getimage: state.getimage
+	 };
 }
 
-export default connect(mapStateToProps, { fetchImage })(ImageList);
+function mapDispatchToProps(dispatch){
+	return bindActionCreators({ fetchImage, getImage }, dispatch);
+}
+
+export default connect(mapStateToProps, mapDispatchToProps)(ImageList);

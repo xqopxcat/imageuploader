@@ -6,7 +6,9 @@ export default function(state = [], action){
 		case FETCH_IMAGE:
 			return _.mapKeys(action.payload.data, 'name');
 		case POST_IMAGE:
-			return _.mapKeys(action.payload.data, 'filename');
+			return _.mapKeys(action.payload, 'filename');
+		default:
+		return state;
 	}
 	return state;
 }
