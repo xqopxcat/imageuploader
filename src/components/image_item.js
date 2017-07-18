@@ -47,12 +47,12 @@ class ImageItem extends Component {
 		const moveX = this.state.moveX;
 		const moveY = this.state.moveY;
 		return(
-			<div className="text-xs-center">
+			<div>
 				<div className="small-pic" onMouseMove={this.handleMouseMove} onMouseOver={this.handleMouseOver} onMouseOut={this.handleMouseOut} >
 					<img src={`${this.props.smallImg}`} />
 					<div className="select-frame" style={{display:`${display}`, left:`${ptX}`, top:`${ptY}`}}></div>
 				</div>
-				 <div className="large-pic" style={{display:`${display}`}}><img style={{left:`${moveX}`, top:`${moveY}`}} src={`${this.props.largeImg}`} /></div>
+				 <div className="large-pic" style={{display:`${display}`, width:`${this.props.clientWidth}px`, height: `${this.props.clientHeight}px`}}><img style={{left:`${moveX}`, top:`${moveY}`}} src={`${this.props.largeImg}`} /></div>
 			</div>
 
 		)

@@ -49,15 +49,19 @@ class ImageUploader extends Component{
 	}
 	render(){
 		return(
-			<div>
-		    	<form onSubmit={(event)=>this._handleSubmit(event)}>
-		    		<input type="file" id="upload"
-		    		  onChange={(event)=>this._handleImageChange(event)} />
-		    		<button className="btn btn-primary" 
+			<div style={{backgroundColor: '#F2F7FF'}}>
+		    	<form className="text-xs-center form-upload" onSubmit={(event)=>this._handleSubmit(event)}>
+		    	    <label className="input-group-btn">
+	                    <span className="btn btn-link" style={{margin: '20px 0'}}>
+	                        Select the file & Preview<input type="file" style={{display:'none'}} onChange={(event)=>this._handleImageChange(event)} />
+	                    </span>
+	                    <button className="btn btn-primary" 
 		    		  type="submit" 
 		    		  onClick={(event)=>this._handleSubmit(event)}>Upload Image</button>
+                	</label>
+		    		
 		    	</form>
-		    	<div className="imgPreview">
+		    	<div className="imgPreview text-xs-center">
 		    	  {this.imagePreview()}
 		    	</div>
 		    </div>

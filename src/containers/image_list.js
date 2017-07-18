@@ -8,31 +8,40 @@ import ImageItem from '../components/image_item';
 class ImageList extends Component{
 	constructor(props){
 		super(props)
-		this.state = { imgSrc: '', extension:'' };
+		this.state = { imgSrc: '', extension:'', cilentWidth:400, clientHeight:300 };
 	}
 	componentDidMount(){
 		this.props.fetchImage();
 	}
 	onImgClick(id, extension){
 		this.setState({imgSrc: `${ROOT_URL}/${id}`, extension:`${extension}`}, () => {
-			this.props.getImage(id, extension, 800, 600);
+			var item = document.querySelector('.small-pic');
+			this.setState({cilentWidth: item.clientWidth, clientHeight: item.clientHeight});
+			this.props.getImage(id, extension, item.clientWidth*2, item.clientHeight*2);
 		})
 	}
 	renderImages(){
 		return _.map(this.props.images, (image) =>{
-			return <li className="list-group-item" key={image.name}><img onClick={() => {this.onImgClick(`${image.name}`, `${image.extension}`)}} width={128} height={128} style={{objectFit:'cover'}} src={`${ROOT_URL}/${image.name}${image.extension}`} /></li>
+			return (
+			<div className="list-group-item col-xs-4 text-xs-center" key={image.name}>
+				<img onClick={() => {this.onImgClick(`${image.name}`, `${image.extension}`)}} width={128} height={128} style={{objectFit:'cover'}} src={`${ROOT_URL}/${image.name}${image.extension}`} />
+			</div>)
 		})	
 	}
 	render(){
 		const imgSrc = this.state.imgSrc;
 		const imgExt = this.state.extension;
+		const cilentWidth = this.state.cilentWidth;
+		const clientHeight = this.state.clientHeight;
 		return(
 			<div>
-				<ul className="list-group col-xs-2">
+				<div>
+					{imgSrc == "" ? <div className="col-xs-12 text-info">Click image for view</div> : <ImageItem smallImg={`${imgSrc}${imgExt}`} 
+					largeImg={`${ROOT_URL}/${this.props.getimage.filename}`} cilentWidth={cilentWidth} clientHeight={clientHeight}/>}
+				</div>
+				<div className="list-group col-xs-12">
 					{this.renderImages()}
-				</ul>
-				{imgSrc == "" ? null : <ImageItem smallImg={`${imgSrc}${imgExt}`} 
-				largeImg={`${ROOT_URL}/${this.props.getimage.filename}`}/>}
+				</div>
 			</div>
 		)
 	}
