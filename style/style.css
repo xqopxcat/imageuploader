@@ -51,3 +51,22 @@
     background: #d3e0e2;
     margin-bottom: 10px;
 }
+
+.inputurl-bar{
+    background-color: transparent;
+    margin: 20px 5px;
+    padding: 5px;
+    border: none;
+    border-bottom: solid 2px #b5bdbd;
+    transition: border 0.3s;
+    font-weight: bold;
+    color: #b5bdbd;
+}
+.inputurl-bar::placeholder {
+    color: #b5bdbd;
+}
+.inputurl-bar:focus{
+    outline:none;
+    color: #181810;
+    border-bottom: solid 2px #181810;
+}

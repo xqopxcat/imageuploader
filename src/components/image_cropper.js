@@ -12,13 +12,13 @@ class ImageCropper extends Component{
 		}
 	}
 	onSliderChange(event){
-		this.setState({rotate:event.target.value})
+		this.setState({rotate:parseInt(event.target.value)})
 	}
 	onClickSave(){
 	  if (this.editor) {
 	    const canvasScaled = this.editor.getImageScaledToCanvas();
 	    var dataURL = canvasScaled.toDataURL();
-	    this.setState({dataURL: dataURL}, () => {
+	    this.setState({dataURL: dataURL, rotate:0}, () => {
 	    	this.props.updateImage(this.state.dataURL);
 	    });
 	  }
@@ -35,16 +35,17 @@ class ImageCropper extends Component{
 			        width={500}
 			        height={500}
 			        border={50}
+			        crossOrigin="anonymous"
 			        color={[200, 200, 200, 0.6]} // RGBA 
 			        scale={1.3}
 			        rotate={rotate}
 			      />
 				</div>
-				<div>
+				<div style={{margin:'20px 0'}}>
 					<span>Rotate:</span>
 					<input type="range" min="0" max="360" value={rotate} step="1" onChange={this.onSliderChange} />
 				</div>
-				<button className="btn btn-success" 
+				<button className="btn btn-success" style={{marginBottom:'20px'}}
 		    		  onClick={()=>this.onClickSave()}>Get New Image
 		    	</button>
 			</div>		    	

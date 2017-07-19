@@ -1,20 +1,42 @@
 import React, { Component } from 'react';
 import { connect } from 'react-redux';
 import { bindActionCreators } from 'redux';
-import { postImage } from '../actions';
+import { postImage, postImageByUrl } from '../actions';
 import ImageCropper from '../components/image_cropper.js';
 
 class ImageUploader extends Component{
 	constructor(props) {
 	  super(props);
-	  this.state = {file: '', imageString: '', imagePreviewUrl: '../../public/images/default.jpg'};
-	  this.handleChange = this.handleChange.bind(this)
+	  this.state = {file: '', 
+	  	imageString: '', 
+	  	imagePreviewUrl: '../../public/images/default.jpg',
+	  	selectedOption: 'uploadfile',
+	  	term: ''
+	  };
+	  this.handleChange = this.handleChange.bind(this);
+	  this.handleOptionChange = this.handleOptionChange.bind(this);
+	  this.onInputChange = this.onInputChange.bind(this);
 	}
 	_handleSubmit(event) {
 	  event.preventDefault();
-	  this.props.postImage(this.state.file, () => {
-	  	this.props.history.push('/list');
-	  });
+	  if(this.state.selectedOption === 'uploadfile'){
+	  	this.props.postImage(this.state.file, () => {
+		  	this.props.history.push('/list');
+		});
+	  }
+	  else{
+	  	if(!this.state.file){
+	  		var body = JSON.stringify({imageUrl: this.state.term});
+		  	this.props.postImageByUrl(body, () => {
+		  		this.props.history.push('/list');
+			});
+	  	}
+	  	else{
+	  		this.props.postImage(this.state.file, () => {
+			  	this.props.history.push('/list');
+			});
+	  	}
+	  }
 	}
 	_handleImageChange(event) {
 		event.preventDefault();
@@ -34,13 +56,26 @@ class ImageUploader extends Component{
 			this.setState({file:file});
 		});
 	}
+	handleOptionChange(e){
+		this.setState({selectedOption: e.target.value});
+	}
+	onInputChange(event){
+		this.setState({ term: event.target.value});
+	}
 	imagePreview(){
-		let {imagePreviewUrl} = this.state;
+		let {imagePreviewUrl, term, selectedOption} = this.state;
 	    let $imagePreview = null;
-	    if (imagePreviewUrl) {
-	    	return (
-	    		<ImageCropper src={imagePreviewUrl} updateImage={this.handleChange}/>
-	    	)
+	    if (imagePreviewUrl || term) {
+	    	if(selectedOption === 'uploadfile'){
+	    		return (
+		    		<ImageCropper src={imagePreviewUrl} updateImage={this.handleChange}/>
+		    	)
+	    	}
+	    	else{
+	    		return (
+		    		<ImageCropper src={term} updateImage={this.handleChange}/>
+		    	)
+	    	}
 	    } else {
 	    	return (
 	    		<div>Loading...</div>
@@ -48,29 +83,46 @@ class ImageUploader extends Component{
 	    }
 	}
 	render(){
+		const selectedOption = this.state.selectedOption;
+		const term = this.state.term;
 		return(
 			<div style={{backgroundColor: '#F2F7FF'}}>
 		    	<form className="text-xs-center form-upload" onSubmit={(event)=>this._handleSubmit(event)}>
-		    	    <label className="input-group-btn">
-	                    <span className="btn btn-link" style={{margin: '20px 0'}}>
+	                <label>
+	                    {selectedOption == "uploadfile" ? <span className="btn btn-link" style={{margin: '20px 0'}}>
 	                        Select the file & Preview<input type="file" style={{display:'none'}} onChange={(event)=>this._handleImageChange(event)} />
-	                    </span>
+	                    </span> : <input
+	                    	className="inputurl-bar"
+							placeholder={`Input url`}
+							value={term}
+							onChange={this.onInputChange} 
+						/>}
 	                    <button className="btn btn-primary" 
 		    		  type="submit" 
 		    		  onClick={(event)=>this._handleSubmit(event)}>Upload Image</button>
                 	</label>
-		    		
+	                <div className="radio radio-info">
+	                <label style={{marginRight:20}}>
+			        	<input type="radio" checked={this.state.selectedOption === 'uploadfile'} onChange={this.handleOptionChange}  value="uploadfile" />
+			            By File
+			        </label>
+	                <label>
+			        	<input type="radio" checked={this.state.selectedOption === 'uploadurl'} onChange={this.handleOptionChange} value="uploadurl" />
+			            By Url
+			        </label>
+			        </div>
 		    	</form>
 		    	<div className="imgPreview text-xs-center">
 		    	  {this.imagePreview()}
 		    	</div>
+
 		    </div>
 		)
 	}
 }
 
 function mapDispatchToProps(dispatch){
-	return bindActionCreators({postImage: postImage}, dispatch);
+	return bindActionCreators({postImage, postImageByUrl}, dispatch);
 }
 
 export default connect(null, mapDispatchToProps)(ImageUploader);
@@ -81,6 +133,5 @@ function dataURLtoFile(dataurl, filename) {
     while(n--){
         u8arr[n] = bstr.charCodeAt(n);
     }
-    console.log(new File([u8arr], filename, {type:mime}))
     return new File([u8arr], filename, {type:mime});
 }

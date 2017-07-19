@@ -4,6 +4,7 @@ export const ROOT_URL = 'http://localhost:3000';
 
 export const FETCH_IMAGE = 'FETCH_IMAGE';
 export const POST_IMAGE = 'POST_IMAGE';
+export const POST_IMAGE_URL = 'POST_IMAGE_URL';
 export const GET_IMAGE = 'GET_IMAGE';
 
 export function fetchImage(){
@@ -20,6 +21,18 @@ export function postImage(image, callback){
 	const request = axios.post(`${ROOT_URL}/api/uploadfile`, formData).then(() => callback());
 	return {
 		type: POST_IMAGE,
+		payload: request
+	};
+}
+
+export function postImageByUrl(imageurl, callback){
+	const request = axios.post(`${ROOT_URL}/api/uploadurl`, imageurl, {
+ 		headers: {
+ 	    	'Content-Type': 'application/json'
+ 	    }
+ 	}).then(() => callback());
+	return {
+		type: POST_IMAGE_URL,
 		payload: request
 	};
 }
